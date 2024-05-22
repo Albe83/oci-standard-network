@@ -9,8 +9,8 @@ terraform {
 
 locals {
   compartment_id = var.compartment_id
-  public_cidr = "192.168.0.0/24"
-  private_cidr = "192.168.100.0/24"
+  public_cidr = var.public_cidr
+  private_cidr = var.private_cidr
 
   anywhere = "0.0.0.0/0"
 
