@@ -73,13 +73,6 @@ resource "oci_core_route_table" "public" {
         destination = local.anywhere
         network_entity_id = local.igw.id
     }
-
-    route_rules {
-        description = "OCI Regional Services"
-        destination_type = "SERVICE_CIDR_BLOCK"
-        destination = data.oci_core_services.oci_services.services.0.cidr_block
-        network_entity_id = local.sgw.id
-    }
 }
 
 resource "oci_core_route_table" "private" {
