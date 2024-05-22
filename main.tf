@@ -82,7 +82,7 @@ resource "oci_core_route_table" "private" {
     route_rules {
         description = "Default route"
         destination = local.anywhere
-        network_entity_id = local.igw.id
+        network_entity_id = local.ngw.id
     }
 
     route_rules {
