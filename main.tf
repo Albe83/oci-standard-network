@@ -67,12 +67,15 @@ resource "oci_core_route_table" "public" {
 
     route_rules {
         description = "Default route"
-        network_entity_id = local.igw.id
+        destination_type = "CIDR_BLOCK"
         destination = "0.0.0.0/0"
+        network_entity_id = local.igw.id
     }
 
     route_rules {
         description = "OCI Regional Services"
+        destination_type = "SERVICE_CIDR_BLOCK"
+        destination = data.oci_core_services.oci_services.services.0.cidrBlock
         network_entity_id = local.sgw.id
     }
 }
@@ -83,12 +86,15 @@ resource "oci_core_route_table" "private" {
 
     route_rules {
         description = "Default route"
-        network_entity_id = local.igw.id
+        destination_type = "CIDR_BLOCK"
         destination = "0.0.0.0/0"
+        network_entity_id = local.igw.id
     }
 
     route_rules {
         description = "OCI Regional Services"
+        destination_type = "SERVICE_CIDR_BLOCK"
+        destination = data.oci_core_services.oci_services.services.0.cidrBlock
         network_entity_id = local.sgw.id
     }
 }
