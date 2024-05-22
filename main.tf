@@ -16,6 +16,7 @@ locals {
   vcn = oci_core_vcn.vcn
   igw = oci_core_internet_gateway.igw
   ngw = oci_core_nat_gateway.ngw
+  sgw = oci_core_service_gateway.sgw
 }
 
 data "oci_identity_compartment" "compartment" {
@@ -44,4 +45,16 @@ resource "oci_core_internet_gateway" "igw" {
 resource "oci_core_nat_gateway" "ngw" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
+}
+
+data "oci_core_services" "oci_services" {
+}
+
+resource "oci_core_service_gateway" "sgw" {
+    vcn_id = local.vcn.id
+    compartment_id = local.vcn.compartment_id
+
+    services {
+        service_id = data.oci_core_services.oci_services.services.0.id
+    }
 }
