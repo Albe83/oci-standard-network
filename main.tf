@@ -52,6 +52,13 @@ resource "oci_core_internet_gateway" "igw" {
     display_name = "Internet Gateway"
 }
 
+resource "oci_core_public_ip" "ngw" {
+    compartment_id = local.vcn.compartment_id
+    lifetime = "RESERVED"
+
+    display_name = "NAT Gateway"
+}
+
 resource "oci_core_nat_gateway" "ngw" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
