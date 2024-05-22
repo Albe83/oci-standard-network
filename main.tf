@@ -17,6 +17,7 @@ locals {
 
   compartment = data.oci_identity_compartment.compartment
   vcn = oci_core_vcn.vcn
+  drg = oci_core_drg.drg
 
   igw = oci_core_internet_gateway.igw
   ngw = oci_core_nat_gateway.ngw
@@ -129,4 +130,22 @@ resource "oci_core_subnet" "private" {
     route_table_id = local.rt-private.id
 
     display_name = "Private subnet"
+}
+
+resource "oci_core_drg" "drg" {
+    #Required
+    compartment_id = local.vcn.compartment_id
+
+    display_name = "DRG"
+}
+
+resource "oci_core_drg_attachment" "vcn" {
+    drg_id = local.drg.id
+
+    network_details {
+        type = "VCN"
+        id = local.vcn.id
+    }
+
+    display_name = "VCN"
 }
