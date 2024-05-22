@@ -68,6 +68,7 @@ resource "oci_core_route_table" "public" {
     route_rules {
         description = "Default route"
         network_entity_id = local.igw.id
+        destination = "0.0.0.0/0"
     }
 
     route_rules {
@@ -83,6 +84,7 @@ resource "oci_core_route_table" "private" {
     route_rules {
         description = "Default route"
         network_entity_id = local.igw.id
+        destination = "0.0.0.0/0"
     }
 
     route_rules {
