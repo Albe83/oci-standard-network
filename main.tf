@@ -14,6 +14,8 @@ locals {
 
   compartment = data.oci_identity_compartment.compartment
   vcn = oci_core_vcn.vcn
+  igw = oci_core_internet_gateway.igw
+  ngw = oci_core_internet_gateway.ngw
 }
 
 data "oci_identity_compartment" "compartment" {
@@ -27,4 +29,19 @@ resource "oci_core_vcn" "vcn" {
         local.public_cidr,
         local.private_cidr
     ]
+}
+
+resource "oci_core_internet_gateway" "igw" {
+    vcn_id = local.vcn.id
+    compartment_id = local.vcn.compartment_id
+}
+
+resource "oci_core_internet_gateway" "igw" {
+    vcn_id = local.vcn.id
+    compartment_id = local.vcn.compartment_id
+}
+
+resource "oci_core_nat_gateway" "ngw" {
+    vcn_id = local.vcn.id
+    compartment_id = local.vcn.compartment_id
 }
