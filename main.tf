@@ -40,16 +40,22 @@ resource "oci_core_vcn" "vcn" {
         local.public_cidr,
         local.private_cidr
     ]
+
+    display_name = "VCN"
 }
 
 resource "oci_core_internet_gateway" "igw" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
+
+    display_name = "Internet Gateway"
 }
 
 resource "oci_core_nat_gateway" "ngw" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
+
+    display_name = "NAT Gateway"
 }
 
 data "oci_core_services" "oci_services" {
@@ -62,6 +68,8 @@ resource "oci_core_service_gateway" "sgw" {
     services {
         service_id = data.oci_core_services.oci_services.services.0.id
     }
+
+    display_name = "OCI Services Gateway"
 }
 
 resource "oci_core_route_table" "public" {
@@ -73,6 +81,8 @@ resource "oci_core_route_table" "public" {
         destination = local.anywhere
         network_entity_id = local.igw.id
     }
+
+    display_name = "Route Table for Public subnet"
 }
 
 resource "oci_core_route_table" "private" {
@@ -91,6 +101,8 @@ resource "oci_core_route_table" "private" {
         destination = data.oci_core_services.oci_services.services.0.cidr_block
         network_entity_id = local.sgw.id
     }
+
+    display_name = "Route Table for Private subnet"
 }
 
 resource "oci_core_subnet" "public" {
@@ -102,6 +114,8 @@ resource "oci_core_subnet" "public" {
     prohibit_public_ip_on_vnic = false
 
     route_table_id = local.rt-public.id
+
+    display_name = "Public subnet"
 }
 
 resource "oci_core_subnet" "private" {
@@ -113,4 +127,6 @@ resource "oci_core_subnet" "private" {
     prohibit_public_ip_on_vnic = true
 
     route_table_id = local.rt-private.id
+
+    display_name = "Private subnet"
 }
