@@ -12,6 +12,9 @@ locals {
   public_cidr = "192.168.0.0/24"
   private_cidr = "192.168.100.0/24"
 
+  anywhere = "0.0.0.0/0"
+
+
   compartment = data.oci_identity_compartment.compartment
   vcn = oci_core_vcn.vcn
 
@@ -67,15 +70,14 @@ resource "oci_core_route_table" "public" {
 
     route_rules {
         description = "Default route"
-        destination_type = "CIDR_BLOCK"
-        destination = "0.0.0.0/0"
+        destination = local.anywhere
         network_entity_id = local.igw.id
     }
 
     route_rules {
         description = "OCI Regional Services"
         destination_type = "SERVICE_CIDR_BLOCK"
-        destination = data.oci_core_services.oci_services.services.0.cidrBlock
+        destination = data.oci_core_services.oci_services.services.0.cidr_block
         network_entity_id = local.sgw.id
     }
 }
@@ -86,15 +88,14 @@ resource "oci_core_route_table" "private" {
 
     route_rules {
         description = "Default route"
-        destination_type = "CIDR_BLOCK"
-        destination = "0.0.0.0/0"
+        destination = local.anywhere
         network_entity_id = local.igw.id
     }
 
     route_rules {
         description = "OCI Regional Services"
         destination_type = "SERVICE_CIDR_BLOCK"
-        destination = data.oci_core_services.oci_services.services.0.cidrBlock
+        destination = data.oci_core_services.oci_services.services.0.cidr_block
         network_entity_id = local.sgw.id
     }
 }
