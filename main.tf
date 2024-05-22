@@ -20,8 +20,10 @@ locals {
   sgw = oci_core_service_gateway.sgw
 
   rt-public = oci_core_route_table.public
+  rt-private = oci_core_route_table.private
 
   net-public = oci_core_subnet.public
+  net-private = oci_core_subnet.private
 }
 
 data "oci_identity_compartment" "compartment" {
@@ -67,6 +69,26 @@ resource "oci_core_route_table" "public" {
         description = "Default route"
         network_entity_id = local.igw.id
     }
+
+    route_rules {
+        description = "OCI Regional Services"
+        network_entity_id = local.sgw.id
+    }
+}
+
+resource "oci_core_route_table" "private" {
+    vcn_id = local.vcn.id
+    compartment_id = local.vcn.compartment_id
+
+    route_rules {
+        description = "Default route"
+        network_entity_id = local.igw.id
+    }
+
+    route_rules {
+        description = "OCI Regional Services"
+        network_entity_id = local.sgw.id
+    }
 }
 
 resource "oci_core_subnet" "public" {
@@ -78,4 +100,15 @@ resource "oci_core_subnet" "public" {
     prohibit_public_ip_on_vnic = false
 
     route_table_id = local.rt-public.id
+}
+
+resource "oci_core_subnet" "private" {
+    vcn_id = local.vcn.id
+    compartment_id = local.vcn.compartment_id
+
+    cidr_block = local.private_cidr
+    prohibit_internet_ingress = true
+    prohibit_public_ip_on_vnic = true
+
+    route_table_id = local.rt-private.id
 }
