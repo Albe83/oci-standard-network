@@ -15,7 +15,7 @@ locals {
   compartment = data.oci_identity_compartment.compartment
   vcn = oci_core_vcn.vcn
   igw = oci_core_internet_gateway.igw
-  ngw = oci_core_internet_gateway.ngw
+  ngw = oci_core_nat_gateway.ngw
 }
 
 data "oci_identity_compartment" "compartment" {
