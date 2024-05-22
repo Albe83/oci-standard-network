@@ -37,11 +37,6 @@ resource "oci_core_internet_gateway" "igw" {
     compartment_id = local.vcn.compartment_id
 }
 
-resource "oci_core_internet_gateway" "igw" {
-    vcn_id = local.vcn.id
-    compartment_id = local.vcn.compartment_id
-}
-
 resource "oci_core_nat_gateway" "ngw" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
