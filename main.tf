@@ -64,6 +64,7 @@ resource "oci_core_nat_gateway" "ngw" {
     compartment_id = local.vcn.compartment_id
 
     display_name = "NAT Gateway"
+    public_ip_id = oci_core_public_ip.ngw.id
 }
 
 data "oci_core_services" "oci_services" {
