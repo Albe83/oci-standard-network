@@ -9,10 +9,11 @@ terraform {
 
 locals {
   compartment_id = var.compartment_id
-  public_cidr = var.public_cidr
-  private_cidr = var.private_cidr
 
-  anywhere = "0.0.0.0/0"
+  ingress-cidr = var.ingress-cidr
+  egress-cidr = var.egress-cidr
+  workload-cidr = var.workload-cidr
+  anywhere-cidr = "0.0.0.0/0"
 
 
   compartment = data.oci_identity_compartment.compartment
@@ -23,11 +24,13 @@ locals {
   ngw = oci_core_nat_gateway.ngw
   sgw = oci_core_service_gateway.sgw
 
-  rt-public = oci_core_route_table.public
-  rt-private = oci_core_route_table.private
+  rt-ingress = oci_core_route_table.ingress
+  rt-egress = oci_core_route_table.egress
+  rt-workload = oci_core_route_table.workload
 
-  net-public = oci_core_subnet.public
-  net-private = oci_core_subnet.private
+  net-ingress = oci_core_subnet.ingress
+  net-egress = oci_core_subnet.egress
+  net-workload = oci_core_subnet.workload
 }
 
 data "oci_identity_compartment" "compartment" {
@@ -38,8 +41,9 @@ resource "oci_core_vcn" "vcn" {
     compartment_id = local.compartment.id
 
     cidr_blocks = [
-        local.public_cidr,
-        local.private_cidr
+        local.workload-cidr,
+        local.ingress-cidr,
+        local.egress-cidr,
     ]
 
     display_name = "VCN"
@@ -81,28 +85,35 @@ resource "oci_core_service_gateway" "sgw" {
     display_name = "OCI Services Gateway"
 }
 
-resource "oci_core_route_table" "public" {
+resource "oci_core_route_table" "ingress" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
     route_rules {
         description = "Default route"
-        destination = local.anywhere
+        destination = local.anywhere-cidr
         network_entity_id = local.igw.id
     }
 
-    display_name = "Route Table for Public subnet"
+    display_name = "Route Table for ingress subnet"
 }
 
-resource "oci_core_route_table" "private" {
+resource "oci_core_route_table" "egress" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
     route_rules {
         description = "Default route"
-        destination = local.anywhere
+        destination = local.anywhere-cidr
         network_entity_id = local.ngw.id
     }
+
+    display_name = "Route Table for Egress subnet"
+}
+
+resource "oci_core_route_table" "workload" {
+    vcn_id = local.vcn.id
+    compartment_id = local.vcn.compartment_id
 
     route_rules {
         description = "OCI Regional Services"
@@ -111,33 +122,46 @@ resource "oci_core_route_table" "private" {
         network_entity_id = local.sgw.id
     }
 
-    display_name = "Route Table for Private subnet"
+    display_name = "Route Table for Workload subnet"
 }
 
-resource "oci_core_subnet" "public" {
+resource "oci_core_subnet" "ingress" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
-    cidr_block = local.public_cidr
+    cidr_block = local.ingress-cidr
     prohibit_internet_ingress = false
     prohibit_public_ip_on_vnic = false
 
-    route_table_id = local.rt-public.id
+    route_table_id = local.rt-ingress.id
 
-    display_name = "Public subnet"
+    display_name = "Ingress subnet"
 }
 
-resource "oci_core_subnet" "private" {
+resource "oci_core_subnet" "egress" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
-    cidr_block = local.private_cidr
+    cidr_block = local.egress-cidr
     prohibit_internet_ingress = true
     prohibit_public_ip_on_vnic = true
 
-    route_table_id = local.rt-private.id
+    route_table_id = local.rt-egress.id
 
-    display_name = "Private subnet"
+    display_name = "Egress subnet"
+}
+
+resource "oci_core_subnet" "workload" {
+    vcn_id = local.vcn.id
+    compartment_id = local.vcn.compartment_id
+
+    cidr_block = local.workload-cidr
+    prohibit_internet_ingress = true
+    prohibit_public_ip_on_vnic = true
+
+    route_table_id = local.rt-workload.id
+
+    display_name = "Egress subnet"
 }
 
 resource "oci_core_drg" "drg" {
@@ -153,6 +177,7 @@ resource "oci_core_drg_attachment" "vcn" {
     network_details {
         type = "VCN"
         id = local.vcn.id
+        route_table_id = net-workload.route_table_id
     }
 
     display_name = "VCN"

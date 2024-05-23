@@ -2,12 +2,17 @@ variable "compartment_id" {
     type = string
 }
 
-variable "public_cidr" {
+variable "ingress-cidr" {
     type = string
     default = "192.168.0.0/24"
 }
 
-variable "private_cidr" {
+variable "egress-cidr" {
+    type = string
+    default = "192.168.10.0/24"
+}
+
+variable "workload-cidr" {
     type = string
     default = "192.168.100.0/24"
 }
