@@ -22,7 +22,6 @@ locals {
 
   igw = oci_core_internet_gateway.igw
   ngw = oci_core_nat_gateway.ngw
-  sgw = oci_core_service_gateway.sgw
 
   rt-ingress = oci_core_route_table.ingress
   rt-egress = oci_core_route_table.egress
@@ -71,20 +70,6 @@ resource "oci_core_nat_gateway" "ngw" {
     public_ip_id = oci_core_public_ip.ngw.id
 }
 
-data "oci_core_services" "oci_services" {
-}
-
-resource "oci_core_service_gateway" "sgw" {
-    vcn_id = local.vcn.id
-    compartment_id = local.vcn.compartment_id
-
-    services {
-        service_id = data.oci_core_services.oci_services.services.0.id
-    }
-
-    display_name = "OCI Services Gateway"
-}
-
 resource "oci_core_route_table" "ingress" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
@@ -115,28 +100,7 @@ resource "oci_core_route_table" "workload" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
-    /* route_rules {
-        description = "OCI Regional Services"
-        destination_type = "SERVICE_CIDR_BLOCK"
-        destination = data.oci_core_services.oci_services.services.0.cidr_block
-        network_entity_id = local.sgw.id
-    } */
-
     display_name = "Route Table for Workload subnet"
-}
-
-resource "oci_core_route_table" "oci-services" {
-    vcn_id = local.vcn.id
-    compartment_id = local.vcn.compartment_id
-
-    route_rules {
-        description = "OCI Regional Services"
-        destination_type = "SERVICE_CIDR_BLOCK"
-        destination = data.oci_core_services.oci_services.services.0.cidr_block
-        network_entity_id = local.sgw.id
-    }
-
-    display_name = "Route Table for OCI Services"
 }
 
 resource "oci_core_subnet" "ingress" {
@@ -182,14 +146,21 @@ resource "oci_core_drg" "drg" {
     #Required
     compartment_id = local.vcn.compartment_id
 
-    display_name = "DRG"
+    display_name = format("Local DRG for %s", local.vcn.display_name)
 }
 
 resource "oci_core_remote_peering_connection" "hub" {
     drg_id = local.drg.id
     compartment_id = local.drg.compartment_id
 
-    display_name = "Hub interface"
+    display_name = format("%s to HUB", local.vcn.display_name)
+}
+
+resource "oci_core_remote_peering_connection" "dr" {
+    drg_id = local.drg.id
+    compartment_id = local.drg.compartment_id
+
+    display_name = format("%s to Disaster Recovery region", local.vcn.display_name)
 }
 
 resource "oci_core_drg_attachment" "workload" {
@@ -201,5 +172,5 @@ resource "oci_core_drg_attachment" "workload" {
         route_table_id = local.net-workload.route_table_id
     }
 
-    display_name = "Workload interface"
+    display_name = format("%s Workload", local.vcn.display_name)
 }
