@@ -10,10 +10,10 @@ terraform {
 locals {
   compartment_id = var.compartment_id
 
+  anywhere-cidr = "0.0.0.0/0"
   ingress-cidr = var.ingress_cidr
   egress-cidr = var.egress_cidr
-  workload-cidr = var.workload_cidr
-  anywhere-cidr = "0.0.0.0/0"
+  workload-cidrs = var.workload_cidrs
 
 
   compartment = data.oci_identity_compartment.compartment
@@ -29,7 +29,7 @@ locals {
 
   net-ingress = oci_core_subnet.ingress
   net-egress = oci_core_subnet.egress
-  net-workload = oci_core_subnet.workload
+  net-workloads = oci_core_subnet.workloads
 }
 
 data "oci_identity_compartment" "compartment" {
@@ -39,11 +39,11 @@ data "oci_identity_compartment" "compartment" {
 resource "oci_core_vcn" "vcn" {
     compartment_id = local.compartment.id
 
-    cidr_blocks = [
-        local.workload-cidr,
-        local.ingress-cidr,
-        local.egress-cidr,
-    ]
+    cidr_blocks = setunion(
+        local.workload-cidrs,
+        [local.ingress-cidr],
+        [local.egress-cidr]
+    )
 
     display_name = "VCN"
 }
@@ -129,17 +129,19 @@ resource "oci_core_subnet" "egress" {
     display_name = "Egress subnet"
 }
 
-resource "oci_core_subnet" "workload" {
+resource "oci_core_subnet" "workloads" {
+    for_each = local.workload-cidrs
+
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
-    cidr_block = local.workload-cidr
+    cidr_block = each.key
     prohibit_internet_ingress = true
     prohibit_public_ip_on_vnic = true
 
     route_table_id = local.rt-workload.id
 
-    display_name = "Egress subnet"
+    display_name = format("Subnet %s", each.key)
 }
 
 resource "oci_core_drg" "drg" {
@@ -169,7 +171,7 @@ resource "oci_core_drg_attachment" "workload" {
     network_details {
         type = "VCN"
         id = local.vcn.id
-        route_table_id = local.net-workload.route_table_id
+        route_table_id = local.rt-workload.id
     }
 
     display_name = format("%s Workload", local.vcn.display_name)
