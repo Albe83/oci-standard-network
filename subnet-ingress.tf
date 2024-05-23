@@ -30,7 +30,7 @@ resource "oci_core_subnet" "ingress" {
 
     route_table_id = local.rt-ingress.id
 
-    display_name = local.net-ingress-name
+    display_name = format("Workload-%02d", index(local.ingress-cidrs, each.key) + 1)
 }
 
 resource "oci_logging_log" "ingress" {
