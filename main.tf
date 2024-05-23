@@ -177,7 +177,7 @@ resource "oci_core_drg_attachment" "vcn" {
     network_details {
         type = "VCN"
         id = local.vcn.id
-        route_table_id = net-workload.route_table_id
+        route_table_id = local.net-workload.route_table_id
     }
 
     display_name = "VCN"
