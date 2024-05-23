@@ -115,6 +115,20 @@ resource "oci_core_route_table" "workload" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
+    /* route_rules {
+        description = "OCI Regional Services"
+        destination_type = "SERVICE_CIDR_BLOCK"
+        destination = data.oci_core_services.oci_services.services.0.cidr_block
+        network_entity_id = local.sgw.id
+    } */
+
+    display_name = "Route Table for Workload subnet"
+}
+
+resource "oci_core_route_table" "oci-services" {
+    vcn_id = local.vcn.id
+    compartment_id = local.vcn.compartment_id
+
     route_rules {
         description = "OCI Regional Services"
         destination_type = "SERVICE_CIDR_BLOCK"
@@ -122,7 +136,7 @@ resource "oci_core_route_table" "workload" {
         network_entity_id = local.sgw.id
     }
 
-    display_name = "Route Table for Workload subnet"
+    display_name = "Route Table for OCI Services"
 }
 
 resource "oci_core_subnet" "ingress" {
@@ -178,7 +192,7 @@ resource "oci_core_remote_peering_connection" "hub" {
     display_name = "Hub interface"
 }
 
-resource "oci_core_drg_attachment" "vcn" {
+resource "oci_core_drg_attachment" "workload" {
     drg_id = local.drg.id
 
     network_details {
@@ -187,5 +201,5 @@ resource "oci_core_drg_attachment" "vcn" {
         route_table_id = local.net-workload.route_table_id
     }
 
-    display_name = "VCN interface"
+    display_name = "Workload interface"
 }
