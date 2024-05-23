@@ -150,31 +150,13 @@ resource "oci_core_subnet" "workloads" {
 }
 
 resource "oci_core_drg" "drg" {
-    #Required
     compartment_id = local.vcn.compartment_id
 
     display_name = format("Local DRG for %s", local.vcn.display_name)
 }
 
-resource "oci_core_drg_route_table" "global" {
-    drg_id = local.drg.id
-
-    display_name = format("Global Route Table")
-
-    #import_drg_route_distribution_id = oci_core_drg_route_distribution.test_drg_route_distribution.id
-    #is_ecmp_enabled = var.drg_route_table_is_ecmp_enabled
-}
-
-resource "oci_core_drg_route_distribution" "global-import" {
-    drg_id = local.drg.id
-    distribution_type = "IMPORT"
-
-    display_name = format("Import rules for %s", oci_core_drg_route_table.global.display_name)
-}
-
 resource "oci_core_drg_attachment" "workload" {
     drg_id = local.drg.id
-    drg_route_table_id = oci_core_drg_route_table.global.id
 
     network_details {
         type = "VCN"
@@ -182,19 +164,7 @@ resource "oci_core_drg_attachment" "workload" {
         route_table_id = local.rt-workload.id
     }
 
-    display_name = format("%s Workload", local.vcn.display_name)
-}
-
-resource "oci_core_drg_route_distribution_statement" "import-workload" {
-    action = "ACCEPT"
-    drg_route_distribution_id = oci_core_drg_route_distribution.global-import.id
-    
-    priority = 100
-    
-    match_criteria {
-        match_type = "DRG_ATTACHMENT_ID"
-        drg_attachment_id = oci_core_drg_attachment.workload.id
-    }
+    display_name = format("Remote subnets for %s Workload", local.vcn.display_name)
 }
 
 resource "oci_core_remote_peering_connection" "hub" {
@@ -204,33 +174,9 @@ resource "oci_core_remote_peering_connection" "hub" {
     display_name = format("%s to HUB", local.vcn.display_name)
 }
 
-resource "oci_core_drg_route_distribution_statement" "import-hub" {
-    action = "ACCEPT"
-    drg_route_distribution_id = oci_core_drg_route_distribution.global-import.id
-    
-    priority = 200
-    
-    match_criteria {
-        match_type = "DRG_ATTACHMENT_ID"
-        drg_attachment_id = oci_core_remote_peering_connection.hub.id
-    }
-}
-
 resource "oci_core_remote_peering_connection" "dr" {
     drg_id = local.drg.id
     compartment_id = local.drg.compartment_id
 
     display_name = format("%s to Disaster Recovery region", local.vcn.display_name)
-}
-
-resource "oci_core_drg_route_distribution_statement" "import-dr" {
-    action = "ACCEPT"
-    drg_route_distribution_id = oci_core_drg_route_distribution.global-import.id
-    
-    priority = 1000
-    
-    match_criteria {
-        match_type = "DRG_ATTACHMENT_ID"
-        drg_attachment_id = oci_core_remote_peering_connection.dr.id
-    }
 }
