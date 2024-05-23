@@ -96,10 +96,6 @@ resource "oci_core_route_table" "ingress" {
     }
 
     display_name = "Route Table for ingress subnet"
-
-    depends_on = [
-        local.vcn
-     ]
 }
 
 resource "oci_core_route_table" "egress" {
@@ -113,10 +109,6 @@ resource "oci_core_route_table" "egress" {
     }
 
     display_name = "Route Table for Egress subnet"
-
-    depends_on = [
-        local.vcn
-     ]
 }
 
 resource "oci_core_route_table" "workload" {
@@ -131,10 +123,6 @@ resource "oci_core_route_table" "workload" {
     }
 
     display_name = "Route Table for Workload subnet"
-
-    depends_on = [
-        local.vcn
-     ]
 }
 
 resource "oci_core_subnet" "ingress" {
