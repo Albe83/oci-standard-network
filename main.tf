@@ -18,8 +18,8 @@ locals {
   log-retention = 30
 
   vcn-name = "VCN"
-  net-ingress-name = "Ingress Subnet"
-  net-egress-name = "Egress Subnet"
+  net-ingress-name = "Ingress %s Subnet"
+  net-egress-name = "Egress %s Subnet"
   net-workloads-name = "Workload %s Subnet"
 
   compartment = data.oci_identity_compartment.compartment

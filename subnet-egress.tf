@@ -38,7 +38,7 @@ resource "oci_core_subnet" "egress" {
 
     route_table_id = local.rt-egress.id
 
-    display_name = format("Workload-%02d", index(local.egress-cidrs, each.key) + 1)
+    display_name = format(local.net-egress-name, each.key)
 }
 
 resource "oci_logging_log" "egress" {

@@ -17,8 +17,8 @@ resource "oci_core_subnet" "workloads" {
 
     route_table_id = local.rt-workload.id
 
-    # display_name = format(local.net-workloads-name, each.key)
-    display_name = format("Workload-%02d", index(local.workload-cidrs, each.key) + 1)
+    display_name = format(local.net-workloads-name, each.key)
+    #display_name = format("Workload-%02d", index(local.workload-cidrs, each.key) + 1)
 }
 
 resource "oci_logging_log" "workloads" {
