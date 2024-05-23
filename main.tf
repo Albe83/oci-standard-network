@@ -56,18 +56,18 @@ resource "oci_core_vcn" "vcn" {
 resource "oci_logging_log_group" "flowlogs" {
     compartment_id = local.vcn.compartment_id
 
-    display_name = "Flowlogs"
+    display_name = local.vcn.id
     description = format("Network Logs from VCN: %s", local.vcn.display_name)
 }
 
 resource "oci_logging_log" "flowlogs" {
-  display_name = local.vcn.display_name
+  display_name = local.vcn.id
   log_group_id = oci_logging_log_group.flowlogs.id
   log_type = "SERVICE"
 
   configuration {
     source {
-      category  = "all"
+      category  = "vcn"
       service = "flowlogs"
       source_type = "OCISERVICE"
       resource = local.vcn.id
