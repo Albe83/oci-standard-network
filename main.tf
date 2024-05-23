@@ -170,8 +170,18 @@ resource "oci_core_remote_peering_connection" "dr" {
     display_name = format("%s to Disaster Recovery region", local.vcn.display_name)
 }
 
+resource "oci_core_drg_route_table" "vcn-subnets" {
+    drg_id = local.drg.id
+
+    display_name = format("%s subnets", local.vcn.display_name)
+
+    #import_drg_route_distribution_id = oci_core_drg_route_distribution.test_drg_route_distribution.id
+    #is_ecmp_enabled = var.drg_route_table_is_ecmp_enabled
+}
+
 resource "oci_core_drg_attachment" "workload" {
     drg_id = local.drg.id
+    drg_route_table_id = oci_core_drg_route_table.vcn-subnets.id
 
     network_details {
         type = "VCN"
