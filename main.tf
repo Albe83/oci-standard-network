@@ -10,9 +10,9 @@ terraform {
 locals {
   compartment_id = var.compartment_id
 
-  ingress-cidr = var.ingress-cidr
-  egress-cidr = var.egress-cidr
-  workload-cidr = var.workload-cidr
+  ingress-cidr = var.ingress_cidr
+  egress-cidr = var.egress_cidr
+  workload-cidr = var.workload_cidr
   anywhere-cidr = "0.0.0.0/0"
 
 
