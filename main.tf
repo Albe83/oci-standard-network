@@ -56,6 +56,6 @@ resource "oci_core_vcn" "vcn" {
 resource "oci_logging_log_group" "flowlogs" {
     compartment_id = local.vcn.compartment_id
 
-    display_name = format("Network Logs from VCN: %s", local.vcn.display_name)
+    display_name = "Network Logs"
     description = format("Network Logs from VCN: %s", local.vcn.display_name)
 }
