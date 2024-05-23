@@ -171,6 +171,13 @@ resource "oci_core_drg" "drg" {
     display_name = "DRG"
 }
 
+resource "oci_core_remote_peering_connection" "hub" {
+    drg_id = local.drg.id
+    compartment_id = local.drg.compartment_id
+
+    display_name = "Hub interface"
+}
+
 resource "oci_core_drg_attachment" "vcn" {
     drg_id = local.drg.id
 
@@ -180,5 +187,5 @@ resource "oci_core_drg_attachment" "vcn" {
         route_table_id = local.net-workload.route_table_id
     }
 
-    display_name = "VCN"
+    display_name = "VCN interface"
 }
