@@ -1,4 +1,6 @@
 resource "oci_core_public_ip" "ngw" {
+    count = local.egress-ip-id != null ? 1 : 0
+    
     compartment_id = local.vcn.compartment_id
     lifetime = "RESERVED"
 
@@ -10,7 +12,7 @@ resource "oci_core_nat_gateway" "ngw" {
     compartment_id = local.vcn.compartment_id
 
     display_name = "NAT Gateway"
-    public_ip_id = oci_core_public_ip.ngw.id
+    public_ip_id = coalesce(local.egress-ip-id, oci_core_public_ip.ngw.id)
 }
 
 resource "oci_core_route_table" "egress" {
