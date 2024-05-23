@@ -15,6 +15,7 @@ locals {
   egress-cidr = var.egress_cidr
   workload-cidrs = toset(split(" ", trim(var.workload_cidrs, " ")))
 
+  log-retention = 30
 
   vcn-name = "VCN"
   net-ingress-name = "Ingress Subnet"
@@ -35,6 +36,8 @@ locals {
   net-ingress = oci_core_subnet.ingress
   net-egress = oci_core_subnet.egress
   net-workloads = oci_core_subnet.workloads
+
+  log-group = oci_logging_log_group.flowlogs.id
 }
 
 data "oci_identity_compartment" "compartment" {
@@ -60,14 +63,14 @@ resource "oci_logging_log_group" "flowlogs" {
     description = format("Network Logs from VCN: %s", local.vcn.display_name)
 }
 
-resource "oci_logging_log" "flowlogs" {
+resource "oci_logging_log" "vcn" {
   display_name = local.vcn.id
   log_group_id = oci_logging_log_group.flowlogs.id
   log_type = "SERVICE"
 
   configuration {
     source {
-      category  = "all"
+      category  = "vcn"
       service = "flowlogs"
       source_type = "OCISERVICE"
       resource = local.vcn.id
@@ -75,5 +78,5 @@ resource "oci_logging_log" "flowlogs" {
   }
 
   is_enabled = true
-  retention_duration = 30
+  retention_duration = local.log-retention
 }

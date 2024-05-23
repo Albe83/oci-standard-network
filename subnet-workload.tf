@@ -19,3 +19,23 @@ resource "oci_core_subnet" "workloads" {
 
     display_name = format(local.net-workloads-name, each.key)
 }
+
+resource "oci_logging_log" "workloads" {
+  for_each = local.net-workloads
+
+  display_name = each.value.id
+  log_group_id = local.log-group.id
+  log_type = "SERVICE"
+
+  configuration {
+    source {
+      category  = "all"
+      service = "flowlogs"
+      source_type = "OCISERVICE"
+      resource = each.value.id
+    }
+  }
+
+  is_enabled = true
+  retention_duration = local.log-retention
+}
