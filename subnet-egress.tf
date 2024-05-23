@@ -12,7 +12,7 @@ resource "oci_core_nat_gateway" "ngw" {
     compartment_id = local.vcn.compartment_id
 
     display_name = "NAT Gateway"
-    public_ip_id = coalesce(local.egress-ip-id, oci_core_public_ip.ngw.id)
+    public_ip_id = coalesce(local.egress-ip-id, one(oci_core_public_ip.ngw.id))
 }
 
 resource "oci_core_route_table" "egress" {
