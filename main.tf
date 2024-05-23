@@ -16,6 +16,11 @@ locals {
   workload-cidrs = toset(split(" ", trim(var.workload_cidrs, " ")))
 
 
+  vcn-name = "VCN"
+  net-ingress-name = "Ingress Subnet"
+  net-egress-name = "Egress Subnet"
+  net-workloads-name = "Workload %s Subnet"
+
   compartment = data.oci_identity_compartment.compartment
   vcn = oci_core_vcn.vcn
   drg = oci_core_drg.drg
@@ -45,7 +50,7 @@ resource "oci_core_vcn" "vcn" {
         [local.egress-cidr]
     )
 
-    display_name = "VCN"
+    display_name = local.vcn-name
 }
 
 resource "oci_core_internet_gateway" "igw" {
@@ -100,7 +105,7 @@ resource "oci_core_route_table" "workload" {
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
-    display_name = "Route Table for Workload subnet"
+    display_name = "Route Table for Workload subnets"
 }
 
 resource "oci_core_subnet" "ingress" {
@@ -113,7 +118,7 @@ resource "oci_core_subnet" "ingress" {
 
     route_table_id = local.rt-ingress.id
 
-    display_name = "Ingress subnet"
+    display_name = local.net-ingress-name
 }
 
 resource "oci_core_subnet" "egress" {
@@ -126,7 +131,7 @@ resource "oci_core_subnet" "egress" {
 
     route_table_id = local.rt-egress.id
 
-    display_name = "Egress subnet"
+    display_name = local.net-egress-name
 }
 
 resource "oci_core_subnet" "workloads" {
@@ -141,7 +146,7 @@ resource "oci_core_subnet" "workloads" {
 
     route_table_id = local.rt-workload.id
 
-    display_name = format("Subnet %s", each.key)
+    display_name = format(local.net-workloads-name, each.key)
 }
 
 resource "oci_core_drg" "drg" {
