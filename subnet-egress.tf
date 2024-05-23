@@ -27,10 +27,12 @@ resource "oci_core_route_table" "egress" {
 }
 
 resource "oci_core_subnet" "egress" {
+    for_each = local.egress-cidrs
+
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
-    cidr_block = local.egress-cidr
+    cidr_block = each.key
     prohibit_internet_ingress = true
     prohibit_public_ip_on_vnic = true
 

@@ -11,8 +11,8 @@ locals {
   compartment_id = var.compartment_id
 
   anywhere-cidr = "0.0.0.0/0"
-  ingress-cidr = var.ingress_cidr
-  egress-cidr = var.egress_cidr
+  ingress-cidrs = toset(split(" ", trim(var.ingress_cidrs, " ")))
+  egress-cidrs = toset(split(" ", trim(var.egress_cidrs, " ")))
   workload-cidrs = toset(split(" ", trim(var.workload_cidrs, " ")))
 
   log-retention = 30
@@ -49,8 +49,8 @@ resource "oci_core_vcn" "vcn" {
 
     cidr_blocks = setunion(
         local.workload-cidrs,
-        [local.ingress-cidr],
-        [local.egress-cidr]
+        local.ingress-cidrs,
+        local.egress-cidrs
     )
 
     display_name = local.vcn-name

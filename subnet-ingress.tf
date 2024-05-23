@@ -19,10 +19,12 @@ resource "oci_core_route_table" "ingress" {
 }
 
 resource "oci_core_subnet" "ingress" {
+    for_each = local.ingress-cidrs
+
     vcn_id = local.vcn.id
     compartment_id = local.vcn.compartment_id
 
-    cidr_block = local.ingress-cidr
+    cidr_block = each.key
     prohibit_internet_ingress = false
     prohibit_public_ip_on_vnic = false
 
