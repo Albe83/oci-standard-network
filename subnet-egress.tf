@@ -1,5 +1,5 @@
 resource "oci_core_public_ip" "ngw" {
-    count = local.egress-ip-id != null ? 1 : 0
+    count = local.egress-ip-id == null ? 1 : 0
     
     compartment_id = local.vcn.compartment_id
     lifetime = "RESERVED"
