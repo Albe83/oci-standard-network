@@ -37,7 +37,7 @@ locals {
   net-egress = oci_core_subnet.egress
   net-workloads = oci_core_subnet.workloads
 
-  log-group = oci_logging_log_group.flowlogs.id
+  log-group = oci_logging_log_group.flowlogs
 }
 
 data "oci_identity_compartment" "compartment" {
