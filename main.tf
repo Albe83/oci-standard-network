@@ -59,3 +59,21 @@ resource "oci_logging_log_group" "flowlogs" {
     display_name = "Flowlogs"
     description = format("Network Logs from VCN: %s", local.vcn.display_name)
 }
+
+resource "oci_logging_log" "flowlogs" {
+  display_name = "VCN Logs"
+  log_group_id = oci_logging_log_group.flowlogs.id
+  log_type = "SERVICE"
+
+  configuration {
+    source {
+      category  = "all"
+      service = "flowlogs"
+      source_type = "OCISERVICE"
+      resource = local.vcn.id
+    }
+  }
+
+  is_enabled = true
+  retention_duration = 30
+}
