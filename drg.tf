@@ -17,11 +17,18 @@ resource "oci_core_drg_attachment" "workload" {
     display_name = format("Remote routes for %s Workload", local.vcn.display_name)
 }
 
-resource "oci_core_remote_peering_connection" "hub" {
+resource "oci_core_remote_peering_connection" "hub1" {
     drg_id = local.drg.id
     compartment_id = local.drg.compartment_id
 
-    display_name = format("%s to HUB interface", local.vcn.display_name)
+    display_name = format("%s to Hub1 interface", local.vcn.display_name)
+}
+
+resource "oci_core_remote_peering_connection" "hub2" {
+    drg_id = local.drg.id
+    compartment_id = local.drg.compartment_id
+
+    display_name = format("%s to Hub2 interface", local.vcn.display_name)
 }
 
 resource "oci_core_remote_peering_connection" "dr" {
