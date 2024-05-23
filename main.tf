@@ -67,7 +67,7 @@ resource "oci_logging_log" "flowlogs" {
 
   configuration {
     source {
-      category  = "vcn"
+      category  = "all"
       service = "flowlogs"
       source_type = "OCISERVICE"
       resource = local.vcn.id
