@@ -13,8 +13,6 @@ variable "egress_cidr" {
 }
 
 variable "workload_cidrs" {
-    type = set(string)
-    default = [
-        "192.168.100.0/24"
-    ]
+    type = string
+    default = "192.168.100.0/24"
 }

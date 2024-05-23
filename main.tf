@@ -13,7 +13,7 @@ locals {
   anywhere-cidr = "0.0.0.0/0"
   ingress-cidr = var.ingress_cidr
   egress-cidr = var.egress_cidr
-  workload-cidrs = var.workload_cidrs
+  workload-cidrs = toset(split(" ", trim(var.workload_cidrs)))
 
 
   compartment = data.oci_identity_compartment.compartment
