@@ -65,7 +65,7 @@ resource "oci_logging_log_group" "flowlogs" {
 
 resource "oci_logging_log" "vcn" {
   display_name = local.vcn.id
-  log_group_id = oci_logging_log_group.flowlogs.id
+  log_group_id = local.log-group.id
   log_type = "SERVICE"
 
   configuration {
