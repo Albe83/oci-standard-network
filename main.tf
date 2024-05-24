@@ -11,10 +11,10 @@ locals {
   compartment_id = var.compartment_ocid
 
   anywhere-cidr = "0.0.0.0/0"
-  ingress-cidrs = toset(split(" ", trim(var.ingress_cidrs, " ")))
-  egress-cidrs = toset(split(" ", trim(var.egress_cidrs, " ")))
+  ingress-cidrs = toset(distinct(compact(split(" ", trim(var.ingress_cidrs, " ")))))
+  egress-cidrs = toset(distinct(compact(split(" ", trim(var.egress_cidrs, " ")))))
+  workload-cidrs = toset(distinct(compact(split(" ", trim(var.workload_cidrs, " ")))))
   egress-ip-id = var.egress_ip_ocid
-  workload-cidrs = toset(split(" ", trim(var.workload_cidrs, " ")))
 
   log-retention = 30
 
@@ -48,11 +48,11 @@ data "oci_identity_compartment" "compartment" {
 resource "oci_core_vcn" "vcn" {
     compartment_id = local.compartment.id
 
-    cidr_blocks = setunion(
+    cidr_blocks = toset(distinct(setunion(
         local.workload-cidrs,
         local.ingress-cidrs,
         local.egress-cidrs
-    )
+    )))
 
     display_name = local.vcn-name
 }

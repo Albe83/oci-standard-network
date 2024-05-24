@@ -5,19 +5,19 @@ variable "compartment_ocid" {
 
 variable "ingress_cidrs" {
     type = string
-    default = null
+    default = " "
     description = "List of CIDRs, space separated for ingress subnets"
 }
 
 variable "egress_cidrs" {
     type = string
-    default = null
+    default = " "
     description = "List of CIDRs, space separated for egress subnets"
 }
 
 variable "workload_cidrs" {
     type = string
-    default = null
+    default = " "
     description = "List of CIDRs, space separated for workload subnets"
 }
 
