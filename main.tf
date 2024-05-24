@@ -13,7 +13,7 @@ locals {
   anywhere-cidr = "0.0.0.0/0"
   ingress-cidrs = toset(split(" ", trim(var.ingress_cidrs, " ")))
   egress-cidrs = toset(split(" ", trim(var.egress_cidrs, " ")))
-  egress-ip-id = var.egress_ip_id
+  egress-ip-id = var.egress_ip_ocid
   workload-cidrs = toset(split(" ", trim(var.workload_cidrs, " ")))
 
   log-retention = 30

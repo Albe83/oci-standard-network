@@ -10,10 +10,11 @@ variable "egress_cidrs" {
     type = string
 }
 
-variable "egress_ip_id" {
+variable "workload_cidrs" {
     type = string
 }
 
-variable "workload_cidrs" {
+variable "egress_ip_ocid" {
     type = string
+    default = null
 }
