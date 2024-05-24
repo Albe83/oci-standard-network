@@ -8,7 +8,7 @@ terraform {
 }
 
 locals {
-  compartment_id = var.compartment_id
+  compartment_id = var.compartment_ocid
 
   anywhere-cidr = "0.0.0.0/0"
   ingress-cidrs = toset(split(" ", trim(var.ingress_cidrs, " ")))
