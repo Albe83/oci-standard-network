@@ -29,7 +29,7 @@ data "oci_core_subnets" "subnets" {
 }
 
 resource "oci_logging_log" "subnets" {
-  for_each = { for subnet in data.oci_core_subnets.subnets.subnets: subnet.id => subnet }
+  for_each = { for k, subnet in data.oci_core_subnets.subnets.subnets: subnet.id => subnet }
 
   log_group_id = local.log-group.id
   display_name = each.value.display_name
