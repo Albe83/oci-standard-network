@@ -22,23 +22,6 @@ locals {
   net-ingress-name = "Ingress %s Subnet"
   net-egress-name = "Egress %s Subnet"
   net-workloads-name = "Workload %s Subnet"
-
-  compartment = data.oci_identity_compartment.compartment
-  vcn = oci_core_vcn.vcn
-  drg = oci_core_drg.drg
-
-  igw = oci_core_internet_gateway.igw
-  ngw = oci_core_nat_gateway.ngw
-
-  rt-ingress = oci_core_route_table.ingress
-  rt-egress = oci_core_route_table.egress
-  rt-workload = oci_core_route_table.workload
-
-  net-ingress = oci_core_subnet.ingress
-  net-egress = oci_core_subnet.egress
-  net-workloads = oci_core_subnet.workloads
-
-  log-group = oci_logging_log_group.flowlogs
 }
 
 data "oci_identity_compartment" "compartment" {
@@ -46,7 +29,7 @@ data "oci_identity_compartment" "compartment" {
 }
 
 resource "oci_core_vcn" "vcn" {
-    compartment_id = local.compartment.id
+    compartment_id = oci_identity_compartment.compartment.id
 
     cidr_blocks = toset(distinct(setunion(
         local.workload-cidrs,

@@ -38,5 +38,5 @@ resource "oci_core_subnet" "egress" {
     prohibit_internet_ingress = true
     prohibit_public_ip_on_vnic = true
 
-    route_table_id = local.rt-egress.id
+    route_table_id = oci_core_route_table.egress.id
 }

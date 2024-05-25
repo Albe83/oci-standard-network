@@ -28,5 +28,5 @@ resource "oci_core_subnet" "ingress" {
     prohibit_internet_ingress = false
     prohibit_public_ip_on_vnic = false
 
-    route_table_id = local.rt-ingress.id
+    route_table_id = oci_core_route_table.ingress.id
 }

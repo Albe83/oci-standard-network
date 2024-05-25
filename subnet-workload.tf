@@ -15,5 +15,5 @@ resource "oci_core_subnet" "workloads" {
     prohibit_internet_ingress = true
     prohibit_public_ip_on_vnic = true
 
-    route_table_id = local.rt-workload.id
+    route_table_id = oci_core_route_table.workload.id
 }

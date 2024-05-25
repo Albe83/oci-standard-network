@@ -1,13 +1,13 @@
 resource "oci_logging_log_group" "flowlogs" {
-    compartment_id = local.vcn.compartment_id
+    compartment_id = oci_core_vcn.vcn.compartment_id
 
-    display_name = local.vcn.id
-    description = format("Network Logs from VCN: %s", local.vcn.display_name)
+    display_name = oci_core_vcn.vcn.id
+    description = format("Network Logs from VCN: %s", oci_core_vcn.vcn.display_name)
 }
 
 resource "oci_logging_log" "vcn" {
-  display_name = local.vcn.display_name
-  log_group_id = local.log-group.id
+  display_name = oci_core_vcn.vcn.display_name
+  log_group_id = oci_logging_log_group.flowlogs.id
   log_type = "SERVICE"
 
   configuration {
@@ -15,7 +15,7 @@ resource "oci_logging_log" "vcn" {
       category  = "vcn"
       service = "flowlogs"
       source_type = "OCISERVICE"
-      resource = local.vcn.id
+      resource = oci_core_vcn.vcn.id
     }
   }
 
@@ -31,7 +31,7 @@ resource "oci_logging_log" "subnets" {
   ))
 
   log_group_id = oci_logging_log_group.flowlogs.id
-  display_name = each.value.display_name
+  display_name = each.value.id
   log_type = "SERVICE"
 
   configuration {
