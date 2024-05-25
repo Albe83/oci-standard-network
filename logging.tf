@@ -25,9 +25,9 @@ resource "oci_logging_log" "vcn" {
 
 resource "oci_logging_log" "subnets" {
   for_each = merge(
-    { for cidr, subnet in oci_core_oci_core_subnet.workloads[*]: subnet.id => subnet },
-    { for cidr, subnet in oci_core_oci_core_subnet.ingress[*]: subnet.id => subnet },
-    { for cidr, subnet in oci_core_oci_core_subnet.egress[*]: subnet.id => subnet }
+    { for name, subnet in oci_core_subnet.workloads: subnet.id => subnet },
+    { for name, subnet in oci_core_subnet.ingres: subnet.id => subnet },
+    { for name, subnet in oci_core_subnet.egress: subnet.id => subnet }
   )
 
   log_group_id = oci_logging_log_group.flowlogs.id
