@@ -11,7 +11,7 @@ resource "oci_core_drg_attachment" "workload" {
     network_details {
         type = "VCN"
         id = oci_core_vcn.vcn.id
-        route_table_id = local.rt-workload.id
+        route_table_id = oci_core_route_table.workload.id
     }
 
     display_name = format("Remote routes for %s Workload", oci_core_vcn.vcn.display_name)
