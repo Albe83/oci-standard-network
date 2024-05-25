@@ -23,15 +23,14 @@ resource "oci_logging_log" "vcn" {
   retention_duration = local.log-retention
 }
 
-data "oci_core_subnets" "subnets" {
-    compartment_id = local.vcn.compartment_id
-    vcn_id = local.vcn.id
-}
-
 resource "oci_logging_log" "subnets" {
-  for_each = { for k, subnet in data.oci_core_subnets.subnets.subnets: subnet.id => subnet }
+  for_each = merge(
+    { for cidr, subnet in oci_core_oci_core_subnet.workloads: subnet.id => subnet },
+    { for cidr, subnet in oci_core_oci_core_subnet.ingress: subnet.id => subnet },
+    { for cidr, subnet in oci_core_oci_core_subnet.egress: subnet.id => subnet }
+  )
 
-  log_group_id = local.log-group.id
+  log_group_id = oci_logging_log_group.flowlogs.id
   display_name = each.value.display_name
   log_type = "SERVICE"
 
