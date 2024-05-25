@@ -29,7 +29,7 @@ data "oci_identity_compartment" "compartment" {
 }
 
 resource "oci_core_vcn" "vcn" {
-    compartment_id = oci_identity_compartment.compartment.id
+    compartment_id = data.oci_identity_compartment.compartment.id
 
     cidr_blocks = toset(distinct(setunion(
         local.workload-cidrs,
