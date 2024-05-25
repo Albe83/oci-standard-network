@@ -45,4 +45,8 @@ resource "oci_logging_log" "subnets" {
 
   is_enabled = true
   retention_duration = local.log-retention
+
+  depends_on = [
+    oci_core_subnet.workloads, oci_core_subnet.ingress, oci_core_subnet.egress
+  ]
 }
