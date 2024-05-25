@@ -40,25 +40,5 @@ resource "oci_core_subnet" "egress" {
 
     route_table_id = local.rt-egress.id
 
-    display_name = format(local.net-egress-name, each.key)
-}
-
-resource "oci_logging_log" "egress" {
-  for_each = local.net-egress
-
-  display_name = each.value.id
-  log_group_id = local.log-group.id
-  log_type = "SERVICE"
-
-  configuration {
-    source {
-      category  = "all"
-      service = "flowlogs"
-      source_type = "OCISERVICE"
-      resource = each.value.id
-    }
-  }
-
-  is_enabled = true
-  retention_duration = local.log-retention
+    #display_name = format(local.net-egress-name, each.key)
 }

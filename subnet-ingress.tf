@@ -30,25 +30,5 @@ resource "oci_core_subnet" "ingress" {
 
     route_table_id = local.rt-ingress.id
 
-    display_name = format(local.net-ingress-name, each.key)
-}
-
-resource "oci_logging_log" "ingress" {
-  for_each = local.net-ingress
-
-  display_name = each.value.id
-  log_group_id = local.log-group.id
-  log_type = "SERVICE"
-
-  configuration {
-    source {
-      category  = "all"
-      service = "flowlogs"
-      source_type = "OCISERVICE"
-      resource = each.value.id
-    }
-  }
-
-  is_enabled = true
-  retention_duration = local.log-retention
+    #display_name = format(local.net-ingress-name, each.key)
 }

@@ -56,28 +56,3 @@ resource "oci_core_vcn" "vcn" {
 
     display_name = local.vcn-name
 }
-
-resource "oci_logging_log_group" "flowlogs" {
-    compartment_id = local.vcn.compartment_id
-
-    display_name = local.vcn.id
-    description = format("Network Logs from VCN: %s", local.vcn.display_name)
-}
-
-resource "oci_logging_log" "vcn" {
-  display_name = local.vcn.id
-  log_group_id = local.log-group.id
-  log_type = "SERVICE"
-
-  configuration {
-    source {
-      category  = "vcn"
-      service = "flowlogs"
-      source_type = "OCISERVICE"
-      resource = local.vcn.id
-    }
-  }
-
-  is_enabled = true
-  retention_duration = local.log-retention
-}
