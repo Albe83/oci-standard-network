@@ -1,4 +1,4 @@
-output "subnet" {
+output "subnets" {
   value = { for subnet in oci_core_subnet.subnets: subnet.id => subnet }
 }
 
