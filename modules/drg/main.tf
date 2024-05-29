@@ -9,6 +9,7 @@ terraform {
 
 locals {
   vcn = var.vcn
+  route_table = var.route_table
 
   hubs = toset(["Hub1", "Hub2"])
 }
@@ -23,7 +24,7 @@ resource "oci_core_drg_attachment" "vcn" {
     network_details {
         type = "VCN"
         id = local.vcn.id
-        # route_table_id = oci_core_route_table.workload.id
+        route_table_id = local.route_table.id
     }
 }
 

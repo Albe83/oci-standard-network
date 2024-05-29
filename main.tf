@@ -33,3 +33,10 @@ module "vcn" {
     "192.168.255.0/24"
   ])
 }
+
+module "drg" {
+  source = "./modules/drg"
+
+  vcn = module.vcn.vcn
+  route_table = module.vcn.vcn.route_tables.workload
+}
