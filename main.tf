@@ -22,7 +22,7 @@ module "vcn" {
 
   cidrs_workload = toset([
     "192.168.0.0/24",
-    "192.168.0.10/24"
+    "192.168.10.0/24"
   ])
   
   cidrs_ingress = toset([
