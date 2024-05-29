@@ -3,9 +3,9 @@ output "vcn" {
     oci_core_vcn.vcn,
     { subnets = merge(module.workloads.subnets, module.ingress.subnets, module.egress.subnets) },
     { route_tables = {
-        workload = module.workloads.route_table,
-        ingress = module.ingress.route_table,
-        egress = module.egress.route_table
+        workload = module.workloads.routes,
+        ingress = module.ingress.routes,
+        egress = module.egress.routes
       }
     }
   )

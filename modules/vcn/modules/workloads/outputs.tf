@@ -1,4 +1,4 @@
-output "route_table" {
+output "routes" {
   value = oci_core_route_table.route_table
 }
 
