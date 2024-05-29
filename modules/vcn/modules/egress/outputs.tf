@@ -7,5 +7,5 @@ output "routes" {
 }
 
 output "subnets" {
-  value = { for subnet in oci_coci_core_subnet.subnets: subnet.id => subnet }
+  value = { for subnet in oci_core_subnet.subnets: subnet.id => subnet }
 }

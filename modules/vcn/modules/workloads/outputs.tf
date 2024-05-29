@@ -1,5 +1,5 @@
 output "subnet" {
-  value = { for subnet in oci_oci_core_subnet.subnets: subnet.id => subnet }
+  value = { for subnet in oci_core_subnet.subnets: subnet.id => subnet }
 }
 
 output "route_table" {
