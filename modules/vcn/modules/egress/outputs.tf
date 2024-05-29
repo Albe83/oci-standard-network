@@ -7,5 +7,10 @@ output "routes" {
 }
 
 output "subnets" {
-  value = { for subnet in oci_core_subnet.subnets: subnet.id => subnet }
+  value = {
+    for subnet in oci_core_subnet.subnets:
+      subnet.id => merge(subnet, {
+        route_table = oci_core_route_table.route_table
+      })
+  }
 }
