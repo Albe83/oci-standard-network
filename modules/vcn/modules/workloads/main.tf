@@ -15,7 +15,7 @@ locals {
 
 resource "oci_core_route_table" "route_table" {
     vcn_id = local.vcn.id
-    compartment_id = local.vcn.compartment_ocid
+    compartment_id = local.vcn.compartment_id
 
     display_name = local.route_table_name
 }
