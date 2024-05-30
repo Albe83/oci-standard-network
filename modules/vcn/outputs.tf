@@ -7,6 +7,7 @@ output "vcn" {
         ingress = module.ingress.routes,
         egress = module.egress.routes
       }
-    }
+    },
+    { log_group = oci_logging_log_group.flowlogs }
   )
 }

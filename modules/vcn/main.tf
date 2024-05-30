@@ -29,6 +29,12 @@ resource "oci_core_vcn" "vcn" {
     display_name = local.vcn_name
 }
 
+resource "oci_logging_log_group" "flowlogs" {
+    compartment_id = oci_core_vcn.vcn.compartment_id
+
+    display_name = oci_core_vcn.vcn.id
+}
+
 module "workloads" {
     source = "./modules/workloads"
 
