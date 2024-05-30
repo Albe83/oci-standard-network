@@ -49,6 +49,8 @@ module "ingress" {
 
   vcn = oci_core_vcn.vcn
   cidrs = local.cidrs_ingress
+
+  log_group = oci_logging_log_group.flowlogs
 }
 
 module "egress" {
@@ -56,5 +58,7 @@ module "egress" {
 
   vcn = oci_core_vcn.vcn
   cidrs = local.cidrs_egress
+
+  log_group = oci_logging_log_group.flowlogs
 }
 
