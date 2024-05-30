@@ -36,13 +36,3 @@ resource "oci_core_remote_peering_connection" "hubs" {
 
     display_name = each.key
 }
-
-resource "oci_core_remote_peering_connection" "dr" {
-    drg_id = oci_core_drg.drg.id
-    compartment_id = oci_core_drg.drg.compartment_id
-}
-
-resource "oci_core_remote_peering_connection" "services" {
-    drg_id = oci_core_drg.drg.id
-    compartment_id = oci_core_drg.drg.compartment_id
-}

@@ -40,3 +40,9 @@ module "drg" {
   vcn = module.vcn.vcn
   route_table = module.vcn.vcn.route_tables.workload
 }
+
+module "logs" {
+  source = "./modules/logging"
+
+  vcn = module.vcn.vcn
+}
