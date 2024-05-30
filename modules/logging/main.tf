@@ -24,7 +24,7 @@ data "oci_core_subnets" "subnets" {
 }
 
 resource "oci_logging_log" "subnets" {
-  for_each = oci_core_subnets.subnets.subnets
+  for_each = data.oci_core_subnets.subnets.subnets
 
   log_group_id = oci_logging_log_group.flowlogs.id
   display_name = each.value.id
