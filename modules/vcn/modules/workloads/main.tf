@@ -11,6 +11,7 @@ locals {
   vcn = var.vcn
   cidrs = var.cidrs
   route_table_name = var.route_table_name
+  log_group = var.log_group
 }
 
 resource "oci_core_route_table" "route_table" {
@@ -36,7 +37,7 @@ resource "oci_core_subnet" "subnets" {
 resource "oci_logging_log" "subnets" {
   for_each = oci_core_subnet.subnets
 
-  log_group_id = local.vcn.log_group.id
+  log_group_id = local.log_group.id
   display_name = each.value.id
   log_type = "SERVICE"
 

@@ -40,6 +40,8 @@ module "workloads" {
 
     vcn = oci_core_vcn.vcn
     cidrs = local.cidrs_workload
+
+    log_group = oci_logging_log_group.flowlogs
 }
 
 module "ingress" {
