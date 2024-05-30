@@ -45,4 +45,8 @@ module "logs" {
   source = "./modules/logging"
 
   vcn = module.vcn.vcn
+
+  depends_on = [
+    module.vcn
+   ]
 }
